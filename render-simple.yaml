@@ -1,0 +1,89 @@
+services:
+  # Django API Web Service
+  - type: web
+    name: girinka-api
+    runtime: python
+    plan: starter
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn girinka.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: girinka.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: girinka-db
+          property: connectionString
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: FROM_EMAIL
+        value: "Girinka Pulse <no-reply@mugishajoseph.me>"
+      - key: ML_SERVICE_URL
+        value: https://girinka-pulse-ml.onrender.com
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://your-frontend.vercel.app"
+
+  # Celery Worker
+  - type: worker
+    name: girinka-worker
+    runtime: python
+    plan: starter
+    buildCommand: "pip install -r requirements/production.txt"
+    startCommand: "celery -A girinka worker -l info --concurrency=2"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: girinka.settings.production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: girinka-db
+          property: connectionString
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: FROM_EMAIL
+        value: "Girinka Pulse <no-reply@mugishajoseph.me>"
+      - key: ML_SERVICE_URL
+        value: https://girinka-pulse-ml.onrender.com
+
+  # Celery Beat Scheduler
+  - type: worker
+    name: girinka-beat
+    runtime: python
+    plan: starter
+    buildCommand: "pip install -r requirements/production.txt"
+    startCommand: "celery -A girinka beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: girinka.settings.production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: girinka-db
+          property: connectionString
+
+databases:
+  - name: girinka-db
+    databaseName: girinka_pulse_db
+    user: girinka_user
+    plan: starter

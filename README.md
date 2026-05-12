@@ -47,6 +47,7 @@ AI-powered cow management, health monitoring, and alert system
 - [ML Integration](#-ml-integration)
 - [Running Tests](#-running-tests)
 - [Docker](#-docker)
+- [Deployment](#-deployment)
 
 ---
 
@@ -745,6 +746,42 @@ docker-compose down
 | `girinka-worker` | — | Celery worker (4 concurrent tasks) |
 | `girinka-beat` | — | Celery Beat scheduler |
 | `girinka-flower` | 5555 | Flower task monitoring dashboard |
+
+---
+
+## 🚀 Deployment
+
+### Deploy to Render (Recommended)
+
+This project is fully configured for deployment to [Render](https://render.com).
+
+**Quick Deploy:**
+
+1. Push your code to GitHub
+2. Create a Render account
+3. Follow the [5-minute deployment guide](./QUICK_DEPLOY.md)
+
+**Full Documentation:**
+
+- **[RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)** — Complete step-by-step guide
+- **[QUICK_DEPLOY.md](./QUICK_DEPLOY.md)** — Quick reference for experienced users
+- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** — Track your deployment progress
+- **[.env.render](./.env.render)** — Environment variables template
+
+**What's Included:**
+
+✅ Automated build script (`build.sh`)
+✅ Database seeding (30 districts, 4 AI models)
+✅ Celery worker and beat configuration
+✅ SSL/HTTPS enforcement
+✅ Production-ready settings
+✅ Cloudinary file storage
+✅ Resend email service
+✅ ML service integration
+
+**Cost:** Free tier available, or $28/month for Starter plan (all services)
+
+**Deploy Time:** ~10 minutes for full setup
 
 ---
 

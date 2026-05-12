@@ -90,24 +90,37 @@ TEMPLATES = [
 WSGI_APPLICATION = "girinka.wsgi.application"
 
 # ── Database (PostgreSQL) ─────────────────────────────────────────────────────
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME":     config("DB_NAME",     default="girinka-pulse-db"),
-        "USER":     config("DB_USER",     default="postgres"),
-        "PASSWORD": config("DB_PASSWORD", default="password"),
-        "HOST":     config("DB_HOST",     default="localhost"),
-        "PORT":     config("DB_PORT",     default="5432"),
-        "OPTIONS":  {"sslmode": config("DATABASE_SSL", default="prefer")},
-        "CONN_MAX_AGE": 60,
+import dj_database_url
+
+DATABASE_URL = config("DATABASE_URL", default=None)
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=60, ssl_require=True)
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME":     config("DB_NAME",     default="girinka-pulse-db"),
+            "USER":     config("DB_USER",     default="postgres"),
+            "PASSWORD": config("DB_PASSWORD", default="password"),
+            "HOST":     config("DB_HOST",     default="localhost"),
+            "PORT":     config("DB_PORT",     default="5432"),
+            "OPTIONS":  {"sslmode": config("DATABASE_SSL", default="prefer")},
+            "CONN_MAX_AGE": 60,
+        }
+    }
 
 # ── NO REDIS — Celery uses PostgreSQL as broker ───────────────────────────────
-CELERY_BROKER_URL = config(
-    "CELERY_BROKER_URL",
-    default="db+postgresql://postgres:password@localhost/girinka-pulse-db"
-)
+if DATABASE_URL:
+    # Convert DATABASE_URL to Celery broker format
+    CELERY_BROKER_URL = DATABASE_URL.replace("postgresql://", "db+postgresql://").replace("postgres://", "db+postgresql://")
+else:
+    CELERY_BROKER_URL = config(
+        "CELERY_BROKER_URL",
+        default="db+postgresql://postgres:password@localhost/girinka-pulse-db"
+    )
 CELERY_RESULT_BACKEND  = "django-db"         # django_celery_results
 CELERY_CACHE_BACKEND   = "default"
 CELERY_ACCEPT_CONTENT  = ["json"]
