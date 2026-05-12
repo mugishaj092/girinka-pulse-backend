@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐄 Girinka Pulse — API Docs</title>
+  <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/npm/twemoji@14/2/svg/1f404.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui.min.css">
+  <style>
+    /* ── Brand colours ── */
+    :root {
+      --girinka-green:      #166534;
+      --girinka-green-mid:  #16A34A;
+      --girinka-green-light:#BBF7D0;
+      --girinka-amber:      #D97706;
+      --girinka-red:        #DC2626;
+      --girinka-bg:         #F0FDF4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #F8FAFC; }
+
+    /* ── Top banner ── */
+    .girinka-banner {
+      background: linear-gradient(135deg, var(--girinka-green) 0%, #14532D 100%);
+      color: white;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .girinka-banner h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .girinka-banner p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+    .girinka-badge {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ── Swagger container ── */
+    #swagger-ui { max-width: 1280px; margin: 0 auto; padding: 0 16px 60px; }
+
+    /* ── Topbar hide ── */
+    .swagger-ui .topbar { display: none !important; }
+
+    /* ── Info block ── */
+    .swagger-ui .info {
+      background: white;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin: 24px 0 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .swagger-ui .info .title {
+      color: var(--girinka-green) !important;
+      font-size: 28px !important;
+      font-weight: 800 !important;
+    }
+    .swagger-ui .info .description p { color: #374151; line-height: 1.7; }
+    .swagger-ui .info table th { background: var(--girinka-bg); color: var(--girinka-green); }
+
+    /* ── Auth button ── */
+    .swagger-ui .btn.authorize {
+      background: var(--girinka-green) !important;
+      border-color: var(--girinka-green) !important;
+      color: white !important;
+      font-weight: 600;
+      border-radius: 8px !important;
+      padding: 8px 20px !important;
+    }
+    .swagger-ui .btn.authorize:hover { background: #14532D !important; }
+    .swagger-ui .btn.authorize svg { fill: white !important; }
+
+    /* ── Tag section headers ── */
+    .swagger-ui .opblock-tag {
+      background: white !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 10px !important;
+      margin: 10px 0 4px !important;
+      padding: 14px 20px !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      color: var(--girinka-green) !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    }
+    .swagger-ui .opblock-tag:hover { border-color: var(--girinka-green-mid) !important; }
+    .swagger-ui .opblock-tag small { font-weight: 400; color: #6B7280; font-size: 13px; }
+
+    /* ── Operation blocks ── */
+    .swagger-ui .opblock {
+      border-radius: 8px !important;
+      margin: 4px 0 !important;
+      border: 1px solid transparent !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+    }
+    .swagger-ui .opblock.opblock-get    { border-left: 4px solid #2563EB !important; }
+    .swagger-ui .opblock.opblock-post   { border-left: 4px solid #059669 !important; }
+    .swagger-ui .opblock.opblock-put    { border-left: 4px solid #D97706 !important; }
+    .swagger-ui .opblock.opblock-patch  { border-left: 4px solid #7C3AED !important; }
+    .swagger-ui .opblock.opblock-delete { border-left: 4px solid #DC2626 !important; }
+
+    /* HTTP method badges */
+    .swagger-ui .opblock-summary-method {
+      border-radius: 6px !important;
+      font-weight: 700 !important;
+      min-width: 72px !important;
+      text-align: center !important;
+      font-size: 12px !important;
+      letter-spacing: 0.5px;
+    }
+    .swagger-ui .opblock-get    .opblock-summary-method { background: #2563EB !important; }
+    .swagger-ui .opblock-post   .opblock-summary-method { background: #059669 !important; }
+    .swagger-ui .opblock-put    .opblock-summary-method { background: #D97706 !important; }
+    .swagger-ui .opblock-patch  .opblock-summary-method { background: #7C3AED !important; }
+    .swagger-ui .opblock-delete .opblock-summary-method { background: #DC2626 !important; }
+
+    /* ── Operation summary ── */
+    .swagger-ui .opblock-summary-description {
+      font-weight: 600 !important;
+      color: #1F2937 !important;
+    }
+
+    /* ── Try it out button ── */
+    .swagger-ui .btn.try-out__btn {
+      background: var(--girinka-green-mid) !important;
+      border-color: var(--girinka-green-mid) !important;
+      color: white !important;
+      border-radius: 6px !important;
+    }
+    .swagger-ui .btn.execute {
+      background: var(--girinka-green) !important;
+      border-color: var(--girinka-green) !important;
+      color: white !important;
+      border-radius: 6px !important;
+      font-weight: 600 !important;
+      padding: 10px 24px !important;
+    }
+
+    /* ── Schema / models ── */
+    .swagger-ui .model-box { border-radius: 8px !important; }
+    .swagger-ui section.models { border-radius: 10px !important; border: 1px solid #E2E8F0 !important; }
+    .swagger-ui .model-title { color: var(--girinka-green) !important; font-weight: 700 !important; }
+
+    /* ── Response codes ── */
+    .swagger-ui .responses-inner h4,
+    .swagger-ui .responses-inner h5 { color: var(--girinka-green); }
+    .swagger-ui table.responses-table .response-col_status { font-weight: 700; }
+
+    /* ── Search bar (filter) ── */
+    .swagger-ui .filter-container input {
+      border: 2px solid #E2E8F0 !important;
+      border-radius: 8px !important;
+      padding: 10px 16px !important;
+      font-size: 14px !important;
+      width: 100% !important;
+      background: white !important;
+    }
+    .swagger-ui .filter-container input:focus {
+      border-color: var(--girinka-green-mid) !important;
+      outline: none !important;
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.15) !important;
+    }
+
+    /* ── Code blocks ── */
+    .swagger-ui .microlight { border-radius: 6px !important; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1F5F9; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+    /* ── Footer ── */
+    .girinka-footer {
+      text-align: center;
+      padding: 24px;
+      color: #9CA3AF;
+      font-size: 12px;
+      border-top: 1px solid #E2E8F0;
+      margin-top: 48px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Banner ── -->
+<div class="girinka-banner">
+  <div>
+    <h1>🐄 Girinka Pulse API</h1>
+    <p>Rwanda "One Cow Per Family" — AI-powered national program backend</p>
+  </div>
+  <div class="girinka-badge">
+    <span class="badge">v1.0.0</span>
+    <span class="badge">Django 5 + DRF</span>
+    <span class="badge">PostgreSQL</span>
+    <span class="badge">Cloudinary</span>
+    <span class="badge">Resend</span>
+    <span class="badge">AI Models ×4</span>
+  </div>
+</div>
+
+<div id="swagger-ui"></div>
+
+<div class="girinka-footer">
+  Girinka Pulse API · University of Rwanda · 2026<br>
+  UMUTESI Kelia · MUGISHA Joseph · MUGISHA Philippe
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-standalone-preset.min.js"></script>
+<script>
+  const defined = (value, fallback) => value !== undefined ? value : fallback;
+
+  SwaggerUIBundle({
+    url: "{{ request.build_absolute_uri|escapejs }}".replace("docs/", "schema/"),
+    dom_id: "#swagger-ui",
+    presets:  [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+    layout:   "StandaloneLayout",
+    deepLinking:              true,
+    persistAuthorization:     true,
+    displayOperationId:       false,
+    defaultModelsExpandDepth: 2,
+    defaultModelExpandDepth:  2,
+    docExpansion:             "none",
+    filter:                   true,
+    showExtensions:           false,
+    showCommonExtensions:     true,
+    tryItOutEnabled:          true,
+    requestSnippetsEnabled:   true,
+    syntaxHighlight: { theme: "monokai" },
+    onComplete: function() {
+      // Auto-inject Bearer token hint
+      const auth = document.querySelector(".authorize");
+      if (auth) {
+        const hint = document.createElement("span");
+        hint.style.cssText = "font-size:11px;color:#6B7280;margin-left:10px;";
+        hint.textContent = "Paste your access_token from /auth/login/";
+        auth.parentNode.insertBefore(hint, auth.nextSibling);
+      }
+    }
+  });
+</script>
+</body>
+</html>
